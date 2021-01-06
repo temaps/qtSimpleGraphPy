@@ -21,6 +21,7 @@ def PaintBox(p):
     p.Ellipse(250, 280, 350, 320)
     p.SetColor(0xFF)
     p.OutTextXY(200, 100, "Нажата клавиша с кодом: " + str(k))
+    p.PutPixel(300, 300, 0, 5)
 
     # Конец рисования
 

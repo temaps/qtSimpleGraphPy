@@ -130,6 +130,12 @@ class QTSGraphPy(QMainWindow):
         painter.drawText(x, y, caption)
         self.update()
 
+    def PutPixel(self, x, y, c=0, PenWidth=1):
+        painter = QPainter(self.Canvas)
+        painter.setPen(QPen(QBrush(QColor(c)), PenWidth))
+        painter.drawPoint(x, y)
+        self.update()
+
     def Rectangle(self, x1, y1, x2, y2):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
