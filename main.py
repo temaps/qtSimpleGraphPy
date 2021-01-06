@@ -9,6 +9,7 @@ def PaintBox(p):
     p.Delay(1000)
     p.SetColor(0xFF0000)
     p.Line(0, 600, 600, 0)
+    p.Rectangle(0, 0, 599, 599)
     p.OutTextXY(200, 70, "Нажмите любую клавишу...")
     k = p.ReadKey()
     p.SetColor(0xFFFF00)
