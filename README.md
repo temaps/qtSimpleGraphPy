@@ -1,4 +1,4 @@
-# qtSimpleGraph
+# qtSimpleGraphPy
 ## Проект Qt5 для Qt Creator
 ### Python3
 

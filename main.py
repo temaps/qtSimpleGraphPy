@@ -9,7 +9,8 @@ def PaintBox(p):
     p.Delay(1000)
     p.SetColor(0xFF0000)
     p.Line(0, 600, 600, 0)
-    p.Delay(1000)
+    p.OutTextXY(200, 70, "Нажмите любую клавишу...")
+    k = p.ReadKey()
     p.SetColor(0xFFFF00)
     p.SetFillStyle(1, 0xFFFF)
     p.Circle(50, 50, 50)
@@ -17,6 +18,8 @@ def PaintBox(p):
     p.SetPenStyle(5)
     p.SetFillStyle(3, 0x00FF00FF)
     p.Ellipse(250, 280, 350, 320)
+    p.SetColor(0xFF)
+    p.OutTextXY(200, 100, "Нажата клавиша с кодом: " + str(k))
 
     # Конец рисования
 

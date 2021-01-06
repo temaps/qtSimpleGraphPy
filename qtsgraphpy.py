@@ -1,4 +1,5 @@
 import sys
+from math import sin, cos
 from PyQt5.QtWidgets import QWidget, QApplication, QDesktopWidget, QMainWindow
 from PyQt5.QtGui import QPainter, QColor, QFont, QPixmap, QPen, QBrush
 from PyQt5.QtCore import Qt, QTimer, QTime, QCoreApplication, QEventLoop
@@ -16,6 +17,9 @@ clCyan = 0x0000FFFF
 class QTSGraphPy(QMainWindow):
     pb = None
     TextDirection = 0
+    IDPressedKey = -1
+    EventKeyPressed = False
+    EventMouseClicked = False
 
     def __init__(self, w=640, h=480, x=-1, y=-1):
         QMainWindow.__init__(self)
@@ -50,6 +54,28 @@ class QTSGraphPy(QMainWindow):
 # -----------------------------------------------------
 # События
 # -----------------------------------------------------
+
+    def KeyPressed(self):
+        QCoreApplication.processEvents(QEventLoop.AllEvents, 50)
+        m = self.EventKeyPressed
+        self.EventKeyPressed = False
+        return m
+
+    def keyPressEvent(self, event):
+        self.ResetTimer.stop()
+        self.EventKeyPressed = True
+        self.IDPressedKey = event.key()
+        # if self.IDPressedKey == Qt.Key_Escape:
+            # pass # Нажатие Esc
+        self.ResetTimer.start(self.ResetInterval)
+
+    def ReadKey(self):
+        if self.IDPressedKey == -1:
+            while not self.KeyPressed():
+                self.Delay(1)
+        t = self.IDPressedKey
+        self.IDPressedKey = -1
+        return t
 
     def slotResetTimer(self):
         self.ResetTimer.stop()
@@ -86,6 +112,22 @@ class QTSGraphPy(QMainWindow):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
         painter.drawLine(x1, y1, x2, y2)
+        self.update()
+
+    def OutTextXY(self, x, y, caption):
+        painter = QPainter(self.Canvas)
+        painter.setPen(self.Pen)
+        b = self.TextDirection * 3.14159 / 180
+        r = (x * x + y * y)**0.5
+        sa = y / r
+        ca = x / r
+        sb = sin(b)
+        cb = cos(b)
+        xn = r * (ca * cb - sa * sb)
+        yn = r * (sa * cb + sb * ca)
+        painter.translate(x - xn, y - yn)
+        painter.rotate(self.TextDirection)
+        painter.drawText(x, y, caption)
         self.update()
 
     def SetColor(self, c):
