@@ -22,6 +22,8 @@ def PaintBox(p):
     p.SetColor(0xFF)
     p.OutTextXY(200, 100, "Нажата клавиша с кодом: " + str(k))
     p.PutPixel(300, 300, 0, 5)
+    p.SetTextStyle(1, 45, 12)
+    p.OutTextXY(20, 20, "Привет Мир!")
 
     # Конец рисования
 
