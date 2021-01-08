@@ -95,6 +95,9 @@ class QTSGraphPy(QMainWindow):
 # События
 # -----------------------------------------------------
 
+    def closeEvent(self, event):
+        sys.exit()
+
     def KeyPressed(self):
         QCoreApplication.processEvents(QEventLoop.AllEvents, 50)
         m = self.EventKeyPressed
@@ -125,7 +128,7 @@ class QTSGraphPy(QMainWindow):
         self.ResetTimer.start(self.ResetInterval)
 
     def ReadKey(self):
-        if self.IDPressedKey == -1:
+        if self.IDPressedKey == -1 and self.isVisible():
             while not self.KeyPressed():
                 self.Delay(1)
         t = self.IDPressedKey
@@ -133,7 +136,7 @@ class QTSGraphPy(QMainWindow):
         return t
 
     def ReadMouseButton(self):
-        if self.IDMouseButton == -1:
+        if self.IDMouseButton == -1 and self.isVisible():
             while not self.MouseClicked():
                 self.Delay(1)
         t = self.IDMouseButton
