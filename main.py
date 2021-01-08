@@ -1,10 +1,10 @@
-from qtsgraphpy import QApplication, QTSGraphPy, sys
+from qtsgraphpy import QApplication, QTSGraphPy, sys, Qt
 
 
 def PaintBox(p):
     # Начало рисования
 
-    p.SetColor(0xFF)
+    p.SetColor(Qt.blue)
     p.Line(0, 0, 600, 600)
     p.Delay(1000)
     p.SetColor(0xFF0000)
@@ -24,6 +24,19 @@ def PaintBox(p):
     p.PutPixel(300, 300, 0, 5)
     p.SetTextStyle(1, 45, 12)
     p.OutTextXY(20, 20, "Привет Мир!")
+    p.SetTextStyle(1, 0, 12)
+    p.SetColor(Qt.red)
+    p.OutTextXY(200, 130, "Кликните мышкой в окне...")
+    p.SetColor(Qt.darkGreen)
+    m = p.ReadMouseButton()
+    if m == 1:
+        p.OutTextXY(200, 150, "Нажата левая кнопка")
+    elif m == 2:
+        p.OutTextXY(200, 150, "Нажата правая кнопка")
+    elif m == 3:
+        p.OutTextXY(200, 150, "Нажата средняя кнопка")
+    else:
+        p.OutTextXY(200, 150, "Нажата неизвестная кнопка")
 
     # Конец рисования
 

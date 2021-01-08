@@ -56,6 +56,7 @@ clCyan = 0x0000FFFF
 class QTSGraphPy(QMainWindow):
     pb = None
     TextDirection = 0
+    IDMouseButton = -1
     IDPressedKey = -1
     EventKeyPressed = False
     EventMouseClicked = False
@@ -104,8 +105,23 @@ class QTSGraphPy(QMainWindow):
         self.ResetTimer.stop()
         self.EventKeyPressed = True
         self.IDPressedKey = event.key()
-        # if self.IDPressedKey == Qt.Key_Escape:
-            # pass # Нажатие Esc
+        self.ResetTimer.start(self.ResetInterval)
+
+    def MouseClicked(self):
+        QCoreApplication.processEvents(QEventLoop.AllEvents, 50)
+        m = self.EventMouseClicked
+        self.EventMouseClicked = False
+        return m
+
+    def mousePressEvent(self, event):
+        self.ResetTimer.stop()
+        self.EventMouseClicked = True
+        if event.buttons() == Qt.LeftButton:
+            self.IDMouseButton = 1
+        elif event.buttons() == Qt.RightButton:
+            self.IDMouseButton = 2
+        elif event.buttons() == Qt.RightButton:
+            self.IDMouseButton = 3
         self.ResetTimer.start(self.ResetInterval)
 
     def ReadKey(self):
@@ -114,6 +130,14 @@ class QTSGraphPy(QMainWindow):
                 self.Delay(1)
         t = self.IDPressedKey
         self.IDPressedKey = -1
+        return t
+
+    def ReadMouseButton(self):
+        if self.IDMouseButton == -1:
+            while not self.MouseClicked():
+                self.Delay(1)
+        t = self.IDMouseButton
+        self.IDMouseButton = -1
         return t
 
     def slotResetTimer(self):
