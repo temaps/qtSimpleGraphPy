@@ -43,14 +43,14 @@ from PyQt5.QtWidgets import QWidget, QApplication, QDesktopWidget, QMainWindow
 from PyQt5.QtGui import QPainter, QColor, QFont, QPixmap, QPen, QBrush
 from PyQt5.QtCore import Qt, QTimer, QTime, QCoreApplication, QEventLoop
 
-clRed = 0x00FF0000
-clGreen = 0x0000FF00
-clBlue = 0x000000FF
-clBlack = 0x00000000
-clWhite = 0x00FFFFFF
-clYellow = 0x00FFFF00
-clMagenta = 0x00FF00FF
-clCyan = 0x0000FFFF
+clRed = 0xFF0000
+clGreen = 0x00FF00
+clBlue = 0x0000FF
+clBlack = 0x000000
+clWhite = 0xFFFFFF
+clYellow = 0xFFFF00
+clMagenta = 0xFF00FF
+clCyan = 0x00FFFF
 
 
 class QTSGraphPy(QMainWindow):
@@ -60,6 +60,7 @@ class QTSGraphPy(QMainWindow):
     IDPressedKey = -1
     EventKeyPressed = False
     EventMouseClicked = False
+    SwapYAxis = False
 
     def __init__(self, w=640, h=480, x=-1, y=-1):
         QMainWindow.__init__(self)
@@ -70,6 +71,10 @@ class QTSGraphPy(QMainWindow):
             x = center.x() - w / 2
             y = center.y() - h / 2
         self.setGeometry(x, y, w, h)
+        self.setMinimumHeight(h)
+        self.setMinimumWidth(w)
+        self.setMaximumHeight(h)
+        self.setMaximumWidth(w)
         self.setWindowTitle("Рисунок")
         self.Canvas = QPixmap(self.size())
         self.Canvas.fill(Qt.white)
@@ -164,25 +169,44 @@ class QTSGraphPy(QMainWindow):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
         painter.setBrush(self.Brush)
-        painter.drawEllipse(x - radius, y - radius, radius * 2, radius * 2)
+        if self.SwapYAxis:
+            painter.drawEllipse(x - radius, self.Canvas.height() - 1 -
+                                y - radius, radius * 2, radius * 2)
+        else:
+            painter.drawEllipse(x - radius, y - radius, radius * 2, radius * 2)
         self.update()
 
     def Ellipse(self, x1, y1, x2, y2):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
         painter.setBrush(self.Brush)
-        painter.drawEllipse(x1, y1, abs(x2-x1), abs(y2-y1))
+        if self.SwapYAxis:
+            painter.drawEllipse(x1, self.Canvas.height() - 1 -
+                                abs(y2-y1) - y1, abs(x2-x1), abs(y2-y1))
+        else:
+            painter.drawEllipse(x1, y1, abs(x2-x1), abs(y2-y1))
         self.update()
+
+    def GetPixel(self, x, y):
+        if self.SwapYAxis:
+            y = self.Canvas.height() - y - 1
+        return self.Canvas.toImage().pixelColor(x, y).rgba() % 0x1000000
 
     def Line(self, x1, y1, x2, y2):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
-        painter.drawLine(x1, y1, x2, y2)
+        if self.SwapYAxis:
+            painter.drawLine(x1, self.Canvas.height() - 1 - y1,
+                             x2, self.Canvas.height() - 1 - y2)
+        else:
+            painter.drawLine(x1, y1, x2, y2)
         self.update()
 
     def OutTextXY(self, x, y, caption):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
+        if self.SwapYAxis:
+            y = self.Canvas.height() - y - 1
         b = self.TextDirection * 3.14159 / 180
         r = (x * x + y * y)**0.5
         sa = y / r
@@ -199,14 +223,21 @@ class QTSGraphPy(QMainWindow):
     def PutPixel(self, x, y, c=0, PenWidth=1):
         painter = QPainter(self.Canvas)
         painter.setPen(QPen(QBrush(QColor(c)), PenWidth))
-        painter.drawPoint(x, y)
+        if self.SwapYAxis:
+            painter.drawPoint(x, self.Canvas.height() - 1 - y)
+        else:
+            painter.drawPoint(x, y)
         self.update()
 
     def Rectangle(self, x1, y1, x2, y2):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
         painter.setBrush(self.Brush)
-        painter.drawRect(x1, y1, abs(x2-x1), abs(y2-y1))
+        if self.SwapYAxis:
+            painter.drawRect(x1, self.Canvas.height() - 1 -
+                             abs(y2-y1) - y1, abs(x2-x1), abs(y2-y1))
+        else:
+            painter.drawRect(x1, y1, abs(x2-x1), abs(y2-y1))
         self.update()
 
     def SetColor(self, c):

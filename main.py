@@ -46,8 +46,9 @@ if __name__ == "__main__":
     # Задаётся размер и положение окна
     # (w = 640, h = 480, x = -1, y = -1)
     # В случае отрицательного значения x или y, окно создаётся в центре экрана.
-    window = QTSGraphPy(600, 600)
+    w = QTSGraphPy(600, 600)
 
-    window.pb = PaintBox
-    window.show()
+    w.pb = PaintBox
+
+    w.show()
     sys.exit(app.exec_())
