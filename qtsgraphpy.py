@@ -82,6 +82,7 @@ class QTSGraphPy(QMainWindow):
         self.Pen = QPen(QBrush(QColor(self.DefaultColor)), 1)
         self.Font = QFont()
         self.Brush = QBrush(QColor(self.DefaultColor), 0)
+        self.SetTextStyle(10)
         self.ResetInterval = 1000
         self.ResetTimer = QTimer()
         self.ResetTimer.timeout.connect(self.slotResetTimer)
@@ -180,6 +181,10 @@ class QTSGraphPy(QMainWindow):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
         painter.setBrush(self.Brush)
+        if y1 > y2:
+            y1, y2 = y2, y1
+        if x1 > x2:
+            x1, x2 = x2, x1
         if self.SwapYAxis:
             painter.drawEllipse(x1, self.Canvas.height() - 1 -
                                 abs(y2-y1) - y1, abs(x2-x1), abs(y2-y1))
@@ -233,6 +238,10 @@ class QTSGraphPy(QMainWindow):
         painter = QPainter(self.Canvas)
         painter.setPen(self.Pen)
         painter.setBrush(self.Brush)
+        if y1 > y2:
+            y1, y2 = y2, y1
+        if x1 > x2:
+            x1, x2 = x2, x1
         if self.SwapYAxis:
             painter.drawRect(x1, self.Canvas.height() - 1 -
                              abs(y2-y1) - y1, abs(x2-x1), abs(y2-y1))
@@ -254,13 +263,13 @@ class QTSGraphPy(QMainWindow):
     def SetPenWidth(self, PenWidth):
         self.Pen.setWidth(PenWidth)
 
-    def SetTextStyle(self, idFont, Direction, CharSize):
+    def SetTextStyle(self, CharSize, Direction=0, idFont=0):
         f = ""
         if idFont == 0:
             f = "serif"
         elif idFont == 1:
             f = "sans"
-        elif idFont == 3:
+        elif idFont == 2:
             f = "mono"
         self.TextDirection = Direction
         self.Font.setFamily(f)
